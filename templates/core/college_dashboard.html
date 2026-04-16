@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard - College Management System{% endblock %}
+
+{% block content %}
+<style>
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.card-image {
+    height: 200px;
+    object-fit: cover;
+}
+.card-title-custom {
+    font-weight: 600;
+    color: #2c3e50;
+}
+.card-text-custom {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+</style>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Teacher Dashboard</h1>
+        <div class="text-muted">
+            Welcome back, {{ user.username }}!
+        </div>
+    </div>
+
+    <!-- Main Features Cards -->
+    <div class="row mb-4">
+        <!-- Add Student Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-primary text-white mx-auto">
+                        <i class="fas fa-user-plus fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Add Student</h5>
+                    <p class="card-text-custom">Register new students and send requests to admin for approval</p>
+                    <a href="{% url 'students:teacher_register' %}" class="btn btn-primary btn-sm rounded-pill">
+                        <i class="fas fa-plus me-2"></i>Add New Student
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mark Attendance Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-success text-white mx-auto">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Mark Attendance</h5>
+                    <p class="card-text-custom">Track daily attendance for your students and generate reports</p>
+                    <a href="{% url 'colleges:attendance' %}" class="btn btn-success btn-sm rounded-pill">
+                        <i class="fas fa-calendar-check me-2"></i>Mark Attendance
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marks Management Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-warning text-white mx-auto">
+                        <i class="fas fa-graduation-cap fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Marks Management</h5>
+                    <p class="card-text-custom">Enter and manage student marks, grades, and performance reports</p>
+                    <a href="{% url 'colleges:marks' %}" class="btn btn-warning btn-sm rounded-pill">
+                        <i class="fas fa-chart-bar me-2"></i>Manage Marks
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Students
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Active Courses
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_courses }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-book fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Today's Attendance
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">24/30</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Tasks
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

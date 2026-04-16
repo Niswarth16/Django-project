@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard - College Management System{% endblock %}
+
+{% block page_title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2 stats-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Enrolled Courses
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_courses }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-book fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2 stats-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Completed Courses
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ completed_courses }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-graduation-cap fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2 stats-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Results Available
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ results.count }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2 stats-card">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Profile Status
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {% if student_profile %}Complete{% else %}Incomplete{% endif %}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">My Enrollments</h6>
+                <a href="{% url 'students:courses' %}" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if enrollments %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Course Name</th>
+                                <th>Course Code</th>
+                                <th>Enrollment Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in enrollments %}
+                            <tr>
+                                <td>{{ enrollment.course.name }}</td>
+                                <td>{{ enrollment.course.course_code }}</td>
+                                <td>{{ enrollment.enrollment_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="badge bg-{{ enrollment.status|yesno:'success,warning,danger,info' }}">
+                                        {{ enrollment.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="#" class="btn btn-outline-primary">View</a>
+                                        <a href="#" class="btn btn-outline-info">Details</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-book fa-3x text-gray-300 mb-3"></i>
+                    <p class="text-muted">You haven't enrolled in any courses yet.</p>
+                    <a href="{% url 'courses:list' %}" class="btn btn-primary">Browse Courses</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if results %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Recent Results</h6>
+                <a href="{% url 'students:results' %}" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Course</th>
+                                <th>Marks</th>
+                                <th>Grade</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results|slice:":5" %}
+                            <tr>
+                                <td>{{ result.subject }}</td>
+                                <td>{{ result.course.name }}</td>
+                                <td>{{ result.marks_obtained }}/{{ result.total_marks }}</td>
+                                <td>
+                                    <span class="badge bg-{{ result.grade|yesno:'success,warning,danger,info' }}">
+                                        {{ result.grade }}
+                                    </span>
+                                </td>
+                                <td>{{ result.percentage|floatformat:1 }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'students:courses' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-book"></i> My Courses
+                    </a>
+                    <a href="{% url 'students:results' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-chart-line"></i> View Results
+                    </a>
+                    <a href="{% url 'students:certificates' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-certificate"></i> Certificates
+                    </a>
+                    <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <a href="{% url 'courses:list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-search"></i> Browse Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if student_profile %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Student Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    {% if student_profile.profile_picture %}
+                    <img src="{{ student_profile.profile_picture.url }}" alt="Profile" class="rounded-circle" width="80" height="80">
+                    {% else %}
+                    <i class="fas fa-user fa-4x text-gray-300"></i>
+                    {% endif %}
+                </div>
+                <h6 class="text-center">{{ student_profile.user.get_full_name|default:student_profile.user.username }}</h6>
+                <p class="text-muted text-center small">{{ student_profile.enrollment_number }}</p>
+                
+                <div class="row text-center">
+                    <div class="col-6">
+                        <small class="text-muted">City</small>
+                        <div class="fw-bold">{{ student_profile.city }}</div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">State</small>
+                        <div class="fw-bold">{{ student_profile.state }}</div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-grid">
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">Complete Your Profile</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Your student profile is incomplete. Please complete your profile to access all features.</p>
+                <div class="d-grid">
+                    <a href="{% url 'students:register' %}" class="btn btn-warning">Complete Profile</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Academic Progress</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="text-muted">Course Completion</small>
+                        <small class="text-muted">{{ completed_courses }}/{{ total_courses }}</small>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        {% if total_courses > 0 %}
+                        {% widthratio completed_courses total_courses 100 as progress %}
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress }}%"></div>
+                        {% else %}
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <small class="text-muted">Keep up the good work!</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - College Management System{% endblock %}
+
+{% block content %}
+<style>
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.card-title-custom {
+    font-weight: 600;
+    color: #2c3e50;
+}
+.card-text-custom {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+</style>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Admin Dashboard</h1>
+        <div class="text-muted">
+            Welcome back, {{ user.username }}!
+        </div>
+    </div>
+
+    <!-- Main Features Cards -->
+    <div class="row mb-4">
+        <!-- Add Teacher Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-primary text-white mx-auto">
+                        <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Add Teacher</h5>
+                    <p class="card-text-custom">Register new teachers and instructors for the college</p>
+                    <a href="/admin-panel/add-teacher/" class="btn btn-primary btn-sm rounded-pill">
+                        <i class="fas fa-plus me-2"></i>Add Teacher
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Student Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-success text-white mx-auto">
+                        <i class="fas fa-user-graduate fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Add Student</h5>
+                    <p class="card-text-custom">Register new students and create their profiles</p>
+                    <a href="/admin-panel/add-student/" class="btn btn-success btn-sm rounded-pill">
+                        <i class="fas fa-plus me-2"></i>Add Student
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Requests Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-warning text-white mx-auto">
+                        <i class="fas fa-user-clock fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Student Requests</h5>
+                    <p class="card-text-custom">Review and approve student registration requests</p>
+                    <a href="/admin-panel/student-requests/" class="btn btn-warning btn-sm rounded-pill">
+                        <i class="fas fa-tasks me-2"></i>Manage Requests
+                        {% if pending_users > 0 %}
+                        <span class="badge bg-danger ms-2">{{ pending_users }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Course Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card dashboard-card shadow h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon bg-info text-white mx-auto">
+                        <i class="fas fa-book-plus fa-2x"></i>
+                    </div>
+                    <h5 class="card-title-custom">Add Course</h5>
+                    <p class="card-text-custom">Create new courses and manage curriculum</p>
+                    <a href="/admin-panel/add-course/" class="btn btn-info btn-sm rounded-pill">
+                        <i class="fas fa-plus me-2"></i>Add Course
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Students
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Teachers
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_colleges }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Courses
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_courses }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-book fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Requests
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pending_users }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>
+                        Recent User Registrations
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_users %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>
+                                        {% if user.user_type == 'student' %}
+                                            <span class="badge bg-info">{{ user.get_user_type_display }}</span>
+                                        {% elif user.user_type == 'college' %}
+                                            <span class="badge bg-primary">{{ user.get_user_type_display }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ user.get_user_type_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.is_approved %}
+                                            <span class="badge bg-success">Approved</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ user.created_at|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <p>No recent registrations.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        System Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="text-success">
+                                <i class="fas fa-check-circle fa-3x mb-3"></i>
+                                <div class="h4">{{ total_students }}</div>
+                                <small>Total Students</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-primary">
+                                <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
+                                <div class="h4">{{ total_colleges }}</div>
+                                <small>Total Teachers</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="text-info">
+                                <i class="fas fa-book fa-2x mb-2"></i>
+                                <div class="h5">{{ total_courses }}</div>
+                                <small>Total Courses</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-warning">
+                                <i class="fas fa-user-clock fa-2x mb-2"></i>
+                                <div class="h5">{{ pending_users }}</div>
+                                <small>Pending Requests</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
