@@ -35,8 +35,6 @@ def admin_add_teacher(request):
                 # Create institute profile
                 institute_profile = CollegeProfile.objects.create(
                     user=user,
-                    institute_name=form.cleaned_data['institute_name'],
-                    institute_code=form.cleaned_data['institute_code'],
                     phone=form.cleaned_data['phone'],
                     email=form.cleaned_data['email']
                 )

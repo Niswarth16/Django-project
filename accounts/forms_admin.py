@@ -10,15 +10,14 @@ class AdminTeacherRegistrationForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    phone = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class': 'form-control'}))
     
     class Meta:
         model = CollegeProfile
         fields = [
-            'institute_name', 'institute_code', 'phone', 'email'
+            'phone', 'email'
         ]
         widgets = {
-            'institute_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'institute_code': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
