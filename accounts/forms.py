@@ -25,6 +25,6 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     user_type = forms.ChoiceField(choices=[
         ('student', 'Student'),
-        ('college', 'Institute'),
+        ('college', 'Teacher'),
         ('admin', 'Admin'),
     ], widget=forms.Select(attrs={'class': 'form-control'}))
